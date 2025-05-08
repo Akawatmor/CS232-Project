@@ -123,20 +123,7 @@ npm run deploy
 
 ## Application Structure
 
-# SalePoint/ ├── backend/ 
-# Backend Lambda functions │ ├── customers/ # Customer management API │ ├── products/ 
-# Product management API │ ├── sales/ 
-# Sales transaction API │ └── migrations/ 
-# Database setup scripts ├── database/ 
-# Database schemas ├── frontend/ 
-# Web application files │ ├── css/ 
-# Stylesheets │ ├── js/ 
-# JavaScript files │ └── index.html 
-# Main HTML file ├── infrastructure/ 
-# AWS infrastructure files │ └── cloudformation-template.yaml 
-# CloudFormation template ├── .env.example # Example environment variables ├── aws-deploy.js 
-# Deployment script ├── create-aws-config.js 
-# AWS configuration script └── package.json # Project dependencies
+SalePoint/ ├── backend/ # Backend Lambda functions │ ├── customers/ # Customer management API │ ├── products/ # Product management API │ ├── sales/ # Sales transaction API │ └── migrations/ # Database setup scripts ├── database/ # Database schemas ├── frontend/ # Web application files │ ├── css/ # Stylesheets │ ├── js/ # JavaScript files │ └── index.html # Main HTML file ├── infrastructure/ # AWS infrastructure files │ └── cloudformation-template.yaml # CloudFormation template ├── .env.example # Example environment variables ├── aws-deploy.js # Deployment script ├── create-aws-config.js # AWS configuration script └── package.json # Project dependencies
 
 ## Development
 
