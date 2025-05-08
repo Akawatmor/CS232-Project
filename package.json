@@ -1,0 +1,13 @@
+{
+  "name": "salepoint",
+  "version": "1.0.0",
+  "description": "SalePoint - Sales Transaction Management System",
+  "scripts": {
+    "deploy": "node aws-deploy.js",
+    "create-config": "node create-aws-config.js"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1135.0",
+    "mime-types": "^2.1.35"
+  }
+}

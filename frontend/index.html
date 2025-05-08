@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="js/config.js"></script>
+  <!-- Add AWS SDK for QuickSight Embedding -->
+  <script src="https://unpkg.com/amazon-quicksight-embedding-sdk@2.0.0/dist/quicksight-embedding-js-sdk.min.js"></script>
 </head>
 <body>
   <div class="app-container">
@@ -38,7 +40,13 @@
         <!-- Dashboard page -->
         <div class="page" id="dashboard-page">
           <h2>Dashboard</h2>
-          <div class="dashboard-stats">
+          <!-- QuickSight Dashboard Container -->
+          <div id="quicksight-container" class="quicksight-dashboard">
+            <div class="quicksight-loading">Loading QuickSight dashboard...</div>
+          </div>
+          
+          <!-- Legacy Dashboard Stats - Can be hidden or shown based on preference -->
+          <div class="dashboard-stats legacy-stats">
             <div class="stat-card">
               <h3>Total Sales</h3>
               <div class="stat-value" id="total-sales">₿0</div>
@@ -53,7 +61,8 @@
             </div>
           </div>
           
-          <div class="dashboard-charts">
+          <!-- Legacy Charts - Can be hidden if using QuickSight exclusively -->
+          <div class="dashboard-charts legacy-charts hidden">
             <div class="chart-container">
               <h3>Sales by Month</h3>
               <canvas id="sales-chart"></canvas>
@@ -388,6 +397,7 @@
   <script src="js/auth.js"></script>
   <script src="js/api.js"></script>
   <script src="js/navigation.js"></script>
+  <script src="js/quicksight.js"></script>
   <script src="js/dashboard.js"></script>
   <script src="js/products.js"></script>
   <script src="js/customers.js"></script>
