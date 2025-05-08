@@ -1,0 +1,45 @@
+# SalePoint Architecture Diagram Description
+
+This is a description for creating the architecture diagram:
+
+1. Create a diagram with the following AWS services and their connections:
+
+## Frontend Layer:
+- Web Browser clients connecting to CloudFront
+- CloudFront distribution connected to S3 (for static assets) and API Gateway (for API calls)
+
+## Authentication Layer:
+- Amazon Cognito connected to API Gateway for user authentication
+- IAM policies for service-to-service authentication
+
+## API Layer:
+- API Gateway in the center with multiple endpoints (Products, Customers, Sales, etc.)
+- API Gateway connected to various Lambda functions
+
+## Compute Layer:
+- Lambda functions for:
+  - Products API
+  - Customers API
+  - Sales API
+  - Inventory Updates
+  - Search functionality
+
+## Data Layer:
+- Amazon RDS (MySQL) database for structured data (products, sales, inventory)
+- Amazon DynamoDB for customer relationship data
+- Amazon S3 for product images and documents
+
+## Analytics Layer:
+- Amazon QuickSight connected to RDS for dashboards and reporting
+- CloudWatch for monitoring and logging
+
+## Arrows showing data flow:
+1. User requests from browsers to CloudFront
+2. Authentication flow through Cognito
+3. API requests through API Gateway to Lambda
+4. Lambda reading/writing to databases
+5. Data retrieval from S3 for product images
+6. Analytics queries from QuickSight to RDS
+
+Use AWS official icons for all services.
+Include a color key to distinguish between different service categories.

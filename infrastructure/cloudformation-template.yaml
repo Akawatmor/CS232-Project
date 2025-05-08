@@ -1,0 +1,160 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'SalePoint Solution: Sync all sales transactions in one point'
+
+Resources:
+  # Database resources
+  SalePointDatabase:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      Engine: mysql
+      DBInstanceClass: db.t3.small
+      AllocatedStorage: 20
+      DBName: salepointdb
+      MasterUsername: !Sub '{{resolve:secretsmanager:${SalePointDBCredentials}:SecretString:username}}'
+      MasterUserPassword: !Sub '{{resolve:secretsmanager:${SalePointDBCredentials}:SecretString:password}}'
+      BackupRetentionPeriod: 7
+      MultiAZ: true
+      Tags:
+        - Key: Name
+          Value: SalePoint-Database
+
+  SalePointDBCredentials:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: Credentials for SalePoint RDS database
+      GenerateSecretString:
+        SecretStringTemplate: '{"username": "admin"}'
+        GenerateStringKey: 'password'
+        PasswordLength: 16
+        ExcludeCharacters: '"@/\'
+
+  # DynamoDB for customer and sales rep mapping
+  SalePointCustomerTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: SalePoint-Customers
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: CustomerId
+          AttributeType: S
+        - AttributeName: SalesRepId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: CustomerId
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: SalesRepIndex
+          KeySchema:
+            - AttributeName: SalesRepId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+  # S3 Bucket for product images and PDF documents
+  ProductAssetsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'salepoint-product-assets-${AWS::AccountId}'
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - GET
+            AllowedOrigins:
+              - '*'
+            MaxAge: 3000
+
+  # API Gateway
+  SalePointApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: SalePoint API
+      Description: API for SalePoint Solution
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+
+  # Lambda Functions
+  ProductsFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: SalePoint-Products
+      Runtime: nodejs16.x
+      Handler: products.handler
+      Code:
+        ZipFile: |
+          exports.handler = async (event) => {
+            // Lambda function to handle product-related operations
+            return {
+              statusCode: 200,
+              body: JSON.stringify({ message: "Products API" })
+            };
+          };
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 30
+      MemorySize: 256
+
+  CustomersFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: SalePoint-Customers
+      Runtime: nodejs16.x
+      Handler: customers.handler
+      Code:
+        ZipFile: |
+          exports.handler = async (event) => {
+            // Lambda function to handle customer-related operations
+            return {
+              statusCode: 200,
+              body: JSON.stringify({ message: "Customers API" })
+            };
+          };
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 30
+      MemorySize: 256
+
+  SalesFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: SalePoint-Sales
+      Runtime: nodejs16.x
+      Handler: sales.handler
+      Code:
+        ZipFile: |
+          exports.handler = async (event) => {
+            // Lambda function to handle sales transactions
+            return {
+              statusCode: 200,
+              body: JSON.stringify({ message: "Sales API" })
+            };
+          };
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 30
+      MemorySize: 256
+
+  # IAM Role for Lambda functions
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/AmazonRDSFullAccess
+        - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+        - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+
+Outputs:
+  ApiEndpoint:
+    Description: API Gateway endpoint URL
+    Value: !Sub 'https://${SalePointApi}.execute-api.${AWS::Region}.amazonaws.com/prod'
+  
+  ProductBucketName:
+    Description: S3 bucket for product assets
+    Value: !Ref ProductAssetsBucket

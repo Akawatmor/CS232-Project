@@ -1,0 +1,146 @@
+{
+  "SalePoint-Customers": {
+    "TableName": "SalePoint-Customers",
+    "KeySchema": [
+      {
+        "AttributeName": "CustomerId",
+        "KeyType": "HASH"
+      }
+    ],
+    "AttributeDefinitions": [
+      {
+        "AttributeName": "CustomerId",
+        "AttributeType": "S"
+      },
+      {
+        "AttributeName": "SalesRepId",
+        "AttributeType": "S"
+      }
+    ],
+    "GlobalSecondaryIndexes": [
+      {
+        "IndexName": "SalesRepIndex",
+        "KeySchema": [
+          {
+            "AttributeName": "SalesRepId",
+            "KeyType": "HASH"
+          }
+        ],
+        "Projection": {
+          "ProjectionType": "ALL"
+        }
+      }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "SampleItems": [
+      {
+        "CustomerId": "cust-001",
+        "CustomerName": "John Doe",
+        "CustomerEmail": "john.doe@example.com",
+        "CustomerPhone": "555-0101",
+        "SalesRepId": "user-001",
+        "SalesRepName": "James White",
+        "LastContactDate": "2023-09-15T14:30:00Z",
+        "LastPurchaseDate": "2023-09-10T10:15:00Z",
+        "LastPurchaseAmount": 999.99,
+        "LastSaleId": "sale-001",
+        "TotalPurchases": 1,
+        "LifetimeValue": 999.99,
+        "Status": "ACTIVE",
+        "Notes": "Interested in new smartphone models",
+        "Tags": ["premium", "tech-enthusiast"],
+        "InteractionHistory": [
+          {
+            "Date": "2023-09-08T09:00:00Z",
+            "Type": "CALL",
+            "SalesRepId": "user-001",
+            "Notes": "Discussed smartphone options"
+          },
+          {
+            "Date": "2023-09-10T10:15:00Z",
+            "Type": "PURCHASE",
+            "SalesRepId": "user-001",
+            "Notes": "Purchased Smartphone X",
+            "SaleId": "sale-001"
+          },
+          {
+            "Date": "2023-09-15T14:30:00Z",
+            "Type": "EMAIL",
+            "SalesRepId": "user-001",
+            "Notes": "Sent follow-up about satisfaction with purchase"
+          }
+        ]
+      },
+      {
+        "CustomerId": "cust-002",
+        "CustomerName": "Jane Smith",
+        "CustomerEmail": "jane.smith@example.com",
+        "CustomerPhone": "555-0102",
+        "SalesRepId": "user-002",
+        "SalesRepName": "Maria Garcia",
+        "LastContactDate": "2023-09-14T11:45:00Z",
+        "LastPurchaseDate": "2023-09-12T13:20:00Z",
+        "LastPurchaseAmount": 499.98,
+        "LastSaleId": "sale-002",
+        "TotalPurchases": 1,
+        "LifetimeValue": 499.98,
+        "Status": "ACTIVE",
+        "Notes": "Looking for more office furniture",
+        "Tags": ["business", "repeat-buyer"],
+        "InteractionHistory": [
+          {
+            "Date": "2023-09-05T15:30:00Z",
+            "Type": "VISIT",
+            "SalesRepId": "user-002",
+            "Notes": "Visited showroom to look at office chairs"
+          },
+          {
+            "Date": "2023-09-12T13:20:00Z",
+            "Type": "PURCHASE",
+            "SalesRepId": "user-002",
+            "Notes": "Purchased 2 Office Chairs",
+            "SaleId": "sale-002"
+          },
+          {
+            "Date": "2023-09-14T11:45:00Z",
+            "Type": "CALL",
+            "SalesRepId": "user-002",
+            "Notes": "Called to inquire about desk options"
+          }
+        ]
+      },
+      {
+        "CustomerId": "cust-003",
+        "CustomerName": "Robert Johnson",
+        "CustomerEmail": "robert.johnson@example.com",
+        "CustomerPhone": "555-0103",
+        "SalesRepId": "user-003",
+        "SalesRepName": "Tim Lee",
+        "LastContactDate": "2023-09-14T16:00:00Z",
+        "LastPurchaseDate": "2023-09-14T16:00:00Z", 
+        "LastPurchaseAmount": 129.99,
+        "LastSaleId": "sale-003",
+        "TotalPurchases": 1,
+        "LifetimeValue": 129.99,
+        "Status": "ACTIVE",
+        "Notes": "Likes winter collection",
+        "Tags": ["seasonal-buyer"],
+        "InteractionHistory": [
+          {
+            "Date": "2023-09-10T10:00:00Z",
+            "Type": "EMAIL",
+            "SalesRepId": "user-003",
+            "Notes": "Sent winter collection catalog"
+          },
+          {
+            "Date": "2023-09-14T16:00:00Z",
+            "Type": "PURCHASE",
+            "SalesRepId": "user-003",
+            "Notes": "Purchased Winter Jacket",
+            "SaleId": "sale-003"
+          }
+        ]
+      }
+    ]
+  }
+}

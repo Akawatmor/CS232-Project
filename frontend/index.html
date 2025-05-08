@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SalePoint - Sync all sales transactions in one point</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="js/config.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header section -->
+    <header>
+      <div class="logo">
+        <img src="images/logo.png" alt="SalePoint Logo">
+        <h1>SalePoint</h1>
+      </div>
+      <div class="user-info">
+        <span id="user-name">Loading...</span>
+        <button id="logout-btn">Logout</button>
+      </div>
+    </header>
+
+    <!-- Navigation section -->
+    <nav>
+      <ul>
+        <li><a href="#" class="nav-link active" data-page="dashboard"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+        <li><a href="#" class="nav-link" data-page="products"><i class="fas fa-box"></i> Products</a></li>
+        <li><a href="#" class="nav-link" data-page="customers"><i class="fas fa-users"></i> Customers</a></li>
+        <li><a href="#" class="nav-link" data-page="sales"><i class="fas fa-shopping-cart"></i> Sales</a></li>
+      </ul>
+    </nav>
+
+    <!-- Main content section -->
+    <main>
+      <div class="content-container">
+        <!-- Dashboard page -->
+        <div class="page" id="dashboard-page">
+          <h2>Dashboard</h2>
+          <div class="dashboard-stats">
+            <div class="stat-card">
+              <h3>Total Sales</h3>
+              <div class="stat-value" id="total-sales">₿0</div>
+            </div>
+            <div class="stat-card">
+              <h3>Total Customers</h3>
+              <div class="stat-value" id="total-customers">0</div>
+            </div>
+            <div class="stat-card">
+              <h3>Products in Stock</h3>
+              <div class="stat-value" id="products-in-stock">0</div>
+            </div>
+          </div>
+          
+          <div class="dashboard-charts">
+            <div class="chart-container">
+              <h3>Sales by Month</h3>
+              <canvas id="sales-chart"></canvas>
+            </div>
+            <div class="chart-container">
+              <h3>Top Products</h3>
+              <canvas id="products-chart"></canvas>
+            </div>
+          </div>
+          
+          <div class="recent-activities">
+            <h3>Recent Activities</h3>
+            <ul id="recent-activities-list">
+              <li class="loading-message">Loading recent activities...</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Products page -->
+        <div class="page hidden" id="products-page">
+          <h2>Products</h2>
+          <div class="search-container">
+            <input type="text" id="product-search" placeholder="Search products...">
+            <button id="search-product-btn"><i class="fas fa-search"></i></button>
+          </div>
+          
+          <div class="table-container">
+            <table id="products-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="products-tbody">
+                <tr>
+                  <td colspan="6" class="loading-message">Loading products...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div id="product-details" class="modal">
+            <div class="modal-content">
+              <span class="close-btn">&times;</span>
+              <div class="product-details-container">
+                <div class="product-image">
+                  <img id="product-detail-image" src="" alt="Product Image">
+                </div>
+                <div class="product-info">
+                  <h3 id="product-detail-name"></h3>
+                  <p id="product-detail-description"></p>
+                  <div class="product-meta">
+                    <div class="meta-item">
+                      <span class="meta-label">Price:</span>
+                      <span id="product-detail-price"></span>
+                    </div>
+                    <div class="meta-item">
+                      <span class="meta-label">Category:</span>
+                      <span id="product-detail-category"></span>
+                    </div>
+                    <div class="meta-item">
+                      <span class="meta-label">Stock:</span>
+                      <span id="product-detail-stock"></span>
+                    </div>
+                  </div>
+                  <div class="product-actions">
+                    <a id="product-detail-spec" href="#" target="_blank" class="btn">Download Specification</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customers page -->
+        <div class="page hidden" id="customers-page">
+          <h2>Customers</h2>
+          <div class="search-container">
+            <input type="text" id="customer-search" placeholder="Search customers...">
+            <button id="search-customer-btn"><i class="fas fa-search"></i></button>
+          </div>
+          
+          <div class="table-container">
+            <table id="customers-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Assigned To</th>
+                  <th>Last Purchase</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="customers-tbody">
+                <tr>
+                  <td colspan="6" class="loading-message">Loading customers...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div id="customer-details" class="modal">
+            <div class="modal-content">
+              <span class="close-btn">&times;</span>
+              <div class="customer-details-container">
+                <h3 id="customer-detail-name"></h3>
+                <div class="customer-info">
+                  <div class="info-group">
+                    <div class="info-item">
+                      <span class="info-label">Email:</span>
+                      <span id="customer-detail-email"></span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Phone:</span>
+                      <span id="customer-detail-phone"></span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Address:</span>
+                      <span id="customer-detail-address"></span>
+                    </div>
+                  </div>
+                  <div class="info-group">
+                    <div class="info-item">
+                      <span class="info-label">Assigned Sales Rep:</span>
+                      <span id="customer-detail-salesrep"></span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Last Purchase:</span>
+                      <span id="customer-detail-last-purchase"></span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Total Purchases:</span>
+                      <span id="customer-detail-total-purchases"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="customer-history">
+                  <h4>Purchase History</h4>
+                  <table id="customer-history-table">
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Products</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="customer-history-tbody">
+                      <tr>
+                        <td colspan="4" class="loading-message">Loading history...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sales page -->
+        <div class="page hidden" id="sales-page">
+          <h2>Sales</h2>
+          <div class="new-sale-container">
+            <button id="new-sale-btn" class="btn">New Sale</button>
+          </div>
+          
+          <div class="sales-filters">
+            <div class="filter-group">
+              <label for="sale-status-filter">Status:</label>
+              <select id="sale-status-filter">
+                <option value="all">All</option>
+                <option value="PENDING">Pending</option>
+                <option value="COMPLETED">Completed</option>
+                <option value="CANCELLED">Cancelled</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="sale-date-filter">Date Range:</label>
+              <select id="sale-date-filter">
+                <option value="all">All Time</option>
+                <option value="today">Today</option>
+                <option value="thisWeek">This Week</option>
+                <option value="thisMonth">This Month</option>
+                <option value="lastMonth">Last Month</option>
+                <option value="custom">Custom Range</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="table-container">
+            <table id="sales-table">
+              <thead>
+                <tr>
+                  <th>Sale ID</th>
+                  <th>Customer</th>
+                  <th>Date</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="sales-tbody">
+                <tr>
+                  <td colspan="6" class="loading-message">Loading sales...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div id="sale-details" class="modal">
+            <div class="modal-content">
+              <span class="close-btn">&times;</span>
+              <div class="sale-details-container">
+                <h3>Sale Details <span id="sale-detail-id"></span></h3>
+                <div class="sale-info">
+                  <div class="info-group">
+                    <div class="info-item">
+                      <span class="info-label">Customer:</span>
+                      <span id="sale-detail-customer"></span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Sales Rep:</span>
+                      <span id="sale-detail-salesrep"></span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Date:</span>
+                      <span id="sale-detail-date"></span>
+                    </div>
+                  </div>
+                  <div class="info-group">
+                    <div class="info-item">
+                      <span class="info-label">Status:</span>
+                      <span id="sale-detail-status"></span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Total Amount:</span>
+                      <span id="sale-detail-amount"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="sale-items">
+                  <h4>Items</h4>
+                  <table id="sale-items-table">
+                    <thead>
+                      <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody id="sale-items-tbody">
+                      <tr>
+                        <td colspan="4" class="loading-message">Loading items...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="sale-actions">
+                  <button id="update-sale-status-btn" class="btn">Update Status</button>
+                  <button id="print-invoice-btn" class="btn">Print Invoice</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div id="new-sale-modal" class="modal">
+            <div class="modal-content">
+              <span class="close-btn">&times;</span>
+              <div class="new-sale-form">
+                <h3>New Sale</h3>
+                <div class="form-group">
+                  <label for="new-sale-customer">Customer:</label>
+                  <select id="new-sale-customer" required>
+                    <option value="">Select Customer</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="new-sale-product">Add Product:</label>
+                  <div class="product-search-container">
+                    <input type="text" id="new-sale-product" placeholder="Search products...">
+                    <div id="product-search-results" class="search-results"></div>
+                  </div>
+                </div>
+                <div class="selected-products">
+                  <h4>Selected Products</h4>
+                  <table id="selected-products-table">
+                    <thead>
+                      <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="selected-products-tbody">
+                      <tr>
+                        <td colspan="5" class="empty-message">No products selected</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="sale-summary">
+                  <div class="total-amount">
+                    <span class="total-label">Total:</span>
+                    <span id="new-sale-total">₿0.00</span>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button id="create-sale-btn" class="btn">Create Sale</button>
+                  <button id="cancel-sale-btn" class="btn btn-secondary">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Load JS libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+  
+  <!-- Load application scripts -->
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/customers.js"></script>
+  <script src="js/sales.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
